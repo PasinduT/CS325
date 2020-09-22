@@ -1,0 +1,335 @@
+TMbase - what is it?
+====================
+
+TMbase is a database of transmembrane proteins and their helical membrane-
+spanning domains. 
+TMbase was originally meant as a tool for analyzing the properties of 
+transmembrane proteins. It is intended to facilitate the following tasks:
+
+- finding positional preferences of certain amino acids 
+- deriving an improved method for the prediction of transmembrane domains
+- testing of such prediction schemes
+- statistical testing of general hypotheses concerning transmembrane proteins 
+
+TMbase is mainly based on SwissProt, but contains informations from other 
+sources as well. All data is stored in different tables, suited for use with 
+any relational database management system. These tables are distributed as 
+ASCII files. Since the creation and internal maintenace of TMbase is done on 
+a PC using MS-ACCESS, the ACCESS version of TMbase is available as well.
+
+The current release of TMbase (TMbase25) is based on SwissProt release 25.
+It has been briefly described in the meeting abstract:
+
+K. Hofmann, W. Stoffel
+TMBASE - A database of membrane spanning protein segments
+Biol. Chem. Hoppe-Seyler 374,166 (1993)
+
+
+The data stored in TMbase contain, among other things, information on the
+following:
+
+- What SwissProt entries are transmembrane proteins?
+- How many transmembrane domains do they possess?
+- Where in the sequence are the TM-domains located?
+- What is the sequence of the (putative) membrane-buried parts?
+- What is the sequence of the flanking regions?
+- What is the putative orientation of the transmembrane proteins?
+- What is the putative orientation of the TM-helices?
+- To what type of membrane are the proteins associated?
+- To what species/taxonomic group do the proteins belong?
+- What transmembrane proteins are related to another?
+- What is the 'relative degeneracy' of a TMbase entry?
+
+all these data are present in a form that can be easily queried.
+For a more detailed description of the file structures, see the 
+paragraphs below.
+
+
+Most of the SwissProt-based information has been extracted from theSwissProt 
+annotation in a semi-automatical manner. If there are any errors in these 
+annotations, they will probably be propagated in TMbase, too. 
+However, some consistency checks have been performed though, and in the case 
+of any inconsistencies the contradictory information has not been included
+into TMbase.
+It should be noted, that errors in the annotation of transmembrane helices
+are quite frequent since this reflect only the uncertainty of TM-domain
+prediction and the lacking of experimental data.
+
+The methodology for grouping the transmembrane proteins into families and
+for calculating the 'relative degeneracy' is explained in the paragraphs below.
+
+
+EXPLANATION OF THE INDIVIDUAL FILES:
+====================================
+
+All files are given as comma-delimited ASCII files. Fields that contain 
+character strings are enclosed in double quotes.
+The first record in each file holds the field names instead of values. 
+For import from some database systems, this first record has to be 
+deleted first. Some database systems, however, can use this record for
+automatically assigning field names.
+
+Besides the individual TMbase tables in the *.txt files, the whole TMbase 
+collection is present as a compressed tar-file (tmbase25.tar.Z) for use on
+unix-machines or as a compressed zip-file (tmbase25.zip) for use on PCs.
+
+tmb_e:   (TMbase entries)
+         This file has one record for each transmembrane protein contained in
+         SwissProt25.
+         The records have the following structure:
+         counter     : integer  : just an index
+         ID          : string10 : the SwissProt ID field
+         Description : string80 : the SwissProt DE field (possibly truncated)
+         Length      : integer  : the length of the protein
+         No of TM    : integer  : the number of annotated TM-helices
+       
+tmb_h    (TMbase helices)
+         This file contains one record for each transmembrane helix that
+	 is annotated in SwissProt25.
+         The records have the following structure:
+         helix-ID    : string15 : unique Identifier for a helix
+         ID          : string10 : the associated ID of the tmb_e entry
+	 TM#         : integer  : position-number of the helix in the protein
+	 Start       : integer  : position of first residue in the helix
+	 Stop        : integer  : position of last residue in the helix
+	 Pre         : string5  : the five residues N-terminal of the helix
+	 Transmem    : string35 : the amino acid sequence of the helix
+	 Post        : string5  : the five residues C-terminal of the helix
+         Comment     : string41 : any comments (like e.g. 'signal')
+
+tmb_h2   (predicted TMbase helices)
+         This file contains one record for each transmembrane helix that
+	 is predicted by TMpredict.
+         The records structure is identical to that of tmb_h with one 
+	 additional field at the end:
+	 Orientation : string2  : io=inside to outside, oi=the opposite
+	                          'inside'  means normally the cytoplasmic face
+				  'outside' the lumenal face of the membrane
+				  depending on the organelle (see tmb_mem)
+				  
+tmb_or   (transmembrane protein orientation)
+         This file contains one record for each transmembrane protein, giving
+	 the annotated orientation of the protein. The orientation has been
+	 automatically deduced from either annotation of the orientation itself
+	 or from annotation of features like glycosylation sites or 
+	 phosphorylation sites. Only entries with consistent annotations have
+	 an orientation assigned.
+         The records have the following structure:
+         ID          : string10 : the SwissProt ID field
+	 Nterm       : string1  : either 'i' for inside or 'o' for outside
+	                          position of the N-terminus of the protein.
+				  
+tmb_hor  (transmembrane helix orientation)
+         This file contains one record for each transmembrane helix, giving
+	 the annotated orientation of the membrane spanning segment. 
+         The helix orientations have been derived from the protein orientation
+	 given in tmb_or using the position number of the helix and the 
+	 assumption of an alternating pattern of i->o and o->i helices.
+         The record structure is similar to the one in tmb_or:
+         helix-ID    : string15 : the helix identifier used in tmb_h
+	 Nterm       : string1  : either 'i' for inside or 'o' for outside
+	                          position of the N-terminus of the helix
+
+tmb_mem  (membrane types the TM-proteins are associated with)
+         This file has one record for each transmembrane protein, giving
+	 a classification of the membrane type and subtype.
+	 The following abbreviations are used for membrane types and subtypes:
+	 Organelle-type:    pro = prokaryotic cell membrane
+	                    er  = eukaryotic ER-, Golgi- or Plasma-membrane
+			    mit = mitochondrial membrane
+			    chl = chloroplast membrane
+			    vir = misc. viral membrane proteins
+
+         Subtype       :    er  = ER membrane
+	                    gol = Golgi membrane
+			    mic = unspecified microsomal proteins
+			    pla = euk. plasma membrane
+			    lys = lysosomal membrane
+			    inn = inner membrane (e.g. mitochondrial)
+			    out = outer membrane  
+			    thy = thylakoid membrane
+			    env = envelope membrane (viral)
+			    
+         The records have the following structure:
+         ID             : string10 : the SwissProt ID field
+         Organelle-type : string3  : the organelle the protein is associated to
+       	 Subtype        : string3  : the subtype of the membrane (see above)
+
+tmb_fam  (grouping of transmembrane proteins into families/superfamilies)
+         This file contains one record for each transmembrane protein, 
+	 indicating its membership to a similarity family. Based on 
+	 considerations described below, two different sets
+	 of families have been created. One set is called 'PAM80-families', 
+	 the other is called 'PAM200-families'. The families of the latter
+	 set tend to be bigger because they group more distantly related
+	 proteins into one family. The 'PAM200-reduced' set of families
+	 is very similar to the 'PAM200-families', but some obviously wrong
+	 groupings have been removed by hand.
+	 The records have the following structure:
+         ID            : string10 : the SwissProt ID field
+         PAM80-Family  : integer  : the number of the family the protein
+         PAM200-Family : integer  : ditto                          belongs to
+         PAM200-reduced: integer  : ditto                          
+
+tmb_200r ('PAM200-reduced' family statisctics and descriptions)
+         This file contains a record for each family of the 'PAM200-reduced'
+	 set. For each family the number of members and a short description
+	 are given. At the time being, descriptions are only supplied for
+	 families with 5 or more members. 
+	 If a consensus transmembrane topology of a familly could be
+	 determined, the probable number of TM-helices is indicated.
+	 The records have the following structure:
+         PAM200r-Family : integer  : the family number (see tmb_fam)
+	 population     : integer  : the number of members in the family
+	 function       : string80 : short description of the family
+	 No of TM       : string10 : No. of TM-helices of a typical member
+	 
+tmb_deg  (degeneracy values for transmembrane proteins)
+         When extracting properties from a set of proteins, it is important
+	 to account for the occurence of similar proteins, biasing the 
+	 statistics towards frequently sequenced proteins.
+	 This files contains several measures for 'degeneracy' for each 
+	 transmembrane protein. For a description of the degeneracy values,
+	 see below.
+	 The records have the following structure:
+         ID                    : string10 : the SwissProt ID field
+	 all                   : real     : Degeneracy measures, type II
+	 known orientation     : real     : 
+	 ER, known orientation : real     : 
+	 all/PAM80             : integer  : Degeneracy measures, type I
+	 all/PAM200            : integer  :
+	 ER/PAM200             : integer  :
+	 
+tmb_spec (species (organism) of the TMbase entry)
+         This file contains one entry for each transmembrane protein,
+	 splitting the ID into two sub-fields. One subfield characterizes
+	 the protein, the second one the organism. As a basic taxonomic
+	 information on the species, the one-letter code (P=prokaryotic, 
+	 E=eukaryotic, V=viral) and the taxonomy code and number of the 
+	 SwissProt file SPECLIST.TXT are included.
+	 The records have the following structure:
+         ID        : string10 : the SwissProt ID field
+	 Protein-ID: string4  : The part of the ID representing the protein
+	 Species-ID: string5  : The part of the ID representing the organism
+         Group-ID  : string5  : taxonomy ID in the SwissProt SPECLIST.TXT
+         Spec-Type : string1  : one letter code for basic taxonomy
+	 Spec-No   : integer  : taxonomy number in the SwissProt SPECLIST.TXT
+
+tmb_taxo (taxonomic classification in details)
+         In order to use a more detailed taxonomical classification, this
+	 file contains for each Group-ID (in tmb_spec) the complete taxonomy
+	 given in the bottom part of the SwissProt file SPECLIST.TXT 
+	 The records have the following structure:
+         Group-ID  : string5  : taxonomy ID in the SwissProt SPECLIST.TXT
+         Spec-Type : string1  : one letter code for basic taxonomy
+	 Spec-No   : integer  : taxonomy number in the SwissProt SPECLIST.TXT
+         1st level : string27 : the levels of taxonomy
+	 2nd level : string33 :        .
+	 3rd level : string41 :        .
+	 4th level : string37 :        .
+	 5th level : string22 :        .
+	 6th level : string16 :        .
+	 7th level : string19 :        .
+
+tmb_ncs (number of chains and signal sequences)
+        If the information contained in TMbase is used in evaluation
+	TM-protein predictions, is might me necessary to have data too:
+	SwissProt entries contain in may cases (annotated) N-terminal signal 
+	sequences that are not present in the mature protein. These sequences
+	share several feature with transmembrane segments and could possibly
+	confuse prediction programs.
+	Several SwissProt entries contain polyproteins that are cleaved into
+	individual chains posttranslationally. If this happens to 
+	transmembrane proteins, the assumption that an inside-to-outside
+	TM-segment is followed by an outside-to-inside segment is not
+	necessarily true.
+	This file contains for each of the TMbase protein the number of
+	annotated chains (0 if no annotation is present) and the number
+	of annotated signal sequences (either 0 or 1). A chain number of
+	0 normally can be treated equal to a chain number of 1.
+	The records have the following structure:
+        ID           : string10 : the SwissProt ID field
+        No of chains : integer  : the number of annotated chains
+	No of signals: integer  : the number of annotated N-terminal signals.
+
+
+
+Considerations of TM-protein Families and Degeneracy
+====================================================
+
+Since TMbase was originally meant for the extraction of statistical data,
+it became important to avoid (or reduce) any bias that may be caused by
+the existence of several similar sequences in the database.
+For accomplishing that, several different methods were used, either based
+on similarity of the membrane spanning domains themselves or on similarity
+of the whole protein. 
+The similarity method that is used in the files tmb_fam and tmb_deg is based
+on the following procedure:
+The 'allalldb'-function of the DARWIN server at the ETH-Zurich was used to
+get similarity data for each possible pair of transmembrane proteins that
+exceeds a certain similarity threshold. These similarity data include a
+Smith-Waterman score and an estimated PAM value. (PAM means the number of
+assumed point mutations per 100 residues).
+In the next step, the proteins were grouped into families of sequences that 
+have a PAM distance of less than 80. Each protein that has a PAM value of
+less than 80 to any member of an existing family was assumed to belong to
+that family, too. This method does not implies that each pair of sequences 
+in a particular family must necessarily have a PAM distance less than 80.
+The families resulting from this procedure are called 'PAM80-families'. 
+In a totally analogues fashion, PAM200 families were computed. These PAM200
+families include even more distantly related sequences and, as a consequence,
+there are fewer of these families, each containing more sequences.
+
+Based on this family groupings, the degeneracy values 'all/PAM80',
+'all/PAM200', and 'ER/PAM200' have been calculated.
+The 'all/PAM80' field for a given protein holds an integer number of
+family members belonging to the same family as the original sequence. The 
+reciprocal value of this field could be used as a weighting factor in
+statistical analyses. The 'all/PAM200' field holds an analoguous value
+assuming PAM200 families. The 'ER/PAM200' field, that is present only for
+proteins belonging to the organelle type 'er' (see tmb_mem), contains the
+number of 'ER'-proteins belonging to the same PAM200-family as the original
+protein.
+
+The similarity measure above includes only information of family-membership,
+each other member of the same family contributes by a value of '1', no matter
+if it is a close relative or a more distantly related sequence.
+To avoid this restriction, the 'typeII' degeneracy measure has been
+introduced. The 'type II' degeneracy of a given protein i, Deg(i), is given
+as the following sum
+
+                                  1
+         Deg(i)=      Sum  --------------
+                       j   1+PAMdist(i,j)
+		       
+where j is each of proteins belonging to the same family.
+This too is clearly not a perfect measure for protein degeneracy.
+Nevertheless, it has proved to be useful in avoiding large-family bias in
+several statistical analyses.
+The 'typeII-degeneracies' has been calculated for three different sets of
+proteins. One column in tmb_deg is calculated for all proteins, one for 
+proteins with known transmembrane orientation, and a third one for a subset
+thereof, containing only ER-type proteins.
+
+Availability
+============
+
+At the moment, TMbase25 is available by anonymous ftp from ulrec3.unil.ch
+This address is likely to change in the future.
+
+
+How to contact the author
+=========================
+If there are any further questions , feel free to contact the author under
+this address:
+
+Kay Hofmann
+Bioinformatics group
+ISREC
+Chemin des Boveresses 155
+CH-1066 Epalinges s/Lausanne
+Switzerland
+-------------------------------
+FAX: +41 (21) 652-6933
+Email: khofmann@isrec-sun1.unil.ch
+
