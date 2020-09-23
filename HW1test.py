@@ -1,112 +1,62 @@
-#A possible new solution based on https://academic.oup.com/peds/article/12/7/557/1575362
-
-#Reads RNA in FASTA format from a file
-#Parameter filename: A string containing the relative path of the file from where
-#this program is stored
-#Return: The RNA sequences contained in the file in list format
+# Reads RNA in FASTA format from a file
+# Parameter filename: A string containing the relative path of the file from
+# where this program is stored
+# Return: The RNA sequences contained in the file in a dictionary format
 def readFile(filename):
-
     # Open the file and initialize the dictionary
-
     file = open(filename, "r")
-
     genes = {}
-
     for line in file:
-
         # Remove the newline characters and spaces at the end
-
         line = line.strip()
 
-        
-
         # If the line starts with the '>' character
-
         # then we can start reading the RNA sequence that starts
-
         # from the next line
-
         if line.startswith('>'):
 
-    
-
             # The FASTA format allows spaces, numbers and newlines
-
             # between the RNA sequences
 
-            
-
             # List to hold the gene lines
-
             gene = []
 
-            
-
             # Read the first line of the RNA string
-
             gene_line = file.readline()
 
-            
-
             # While the gene_line is not empty
-
             while (gene_line):
-
                 # Clean the line
-
                 # - Remove the numbers
-
                 for i in range(10):
-
                     gene_line = gene_line.replace(str(i), '')
 
-                    
-
                 # - Remove whitespace
-
                 gene_line = gene_line.replace(' ', '')
-
                 gene_line = gene_line.replace('\n', '')
 
-                
-
-                # If the resulting line is not empty, add it to 
-
+                # If the resulting line is not empty, add it to
                 # the list of gene_lines
-
                 if gene_line:
-
                     gene.append(gene_line)
 
-                    
-
                 # Read the next line of RNA string
-
                 gene_line = (file.readline()).strip()
 
-                
-
             # Add a new gene to the dictionary where
-
-            # Key:   The line that starts with '>' 
-
+            # Key:   The line that starts with '>'
             #        ('>' character removed)
-
             # Value: The RNA sequence of the gene
-
             genes[line[1:]] = ''.join(gene)
 
-            
-
     # Close the file and return the dictionary object
-
     file.close()
-
     return genes
 
-#Sets up a dictionary that matches 3 RNA nucleotides to their corresponding
-#amino acid or to Stop
-#Return: The dictionary after being set up
+
+# Sets up a dictionary that matches 3 RNA nucleotides to their corresponding
+# amino acid or to Stop
+# Return: The dictionary after being set up
 def setUpTable():
     table = {}
     for key in ["UUU", "UUC"]:
@@ -153,238 +103,172 @@ def setUpTable():
         table[key] = "*"
     return table
 
-conforms = {
+# A dictionary to hold the conformational parameters
+conformational_parameters = {
     'Ala': 1.334,
-
     'Arg': 0.169,
-
     'Asn': 0.494,
-
     'Asp': 0.171,
-
     'Cys': 1.062,
-
     'Gln': 0.343,
-
     'Glu': 0.168,
-
     'Gly': 0.998,
-
     'His': 0.530,
-
     'Ile': 1.803,
-
     'Leu': 1.623,
-
     'Lys': 0.115,
-
     'Met': 1.413,
-
     'Phe': 1.707,
-
     'Pro': 0.563,
-
     'Ser': 0.817,
-
     'Thr': 0.838,
-
     'Trp': 1.274,
-
     'Tyr': 1.146,
-
     'Val': 1.599,
+    '*'  : 0
+}
 
-    '*': 0
-    }
-
-def convertToAAs(RNA, table, single_letter = False):
-
-    # Initialize the sequence to an empyt list 
-
+# Converts an RNA sequence into the corresponding amino acid sequence.
+# Stop codones are denoted by '*'
+# Parameter RNA: The RNA sequence in string format
+# Parameter table: The dictionary that pairs RNA to amino acids
+# Parameter single_letter: AA are in single character IUPAC codes (True)
+#                          AA are in 3 character codes (False)
+# Return: A list containing the amino acid sequence
+def convertToAAs(RNA, table, single_letter=False):
+    # Initialize the sequence to an empyt list
     # and the index pointer to 0
-
-    
-
     seq = []
-
     current = 0
 
-    
-
     # Loop over the RNA string length in multiples of 3
-
     while current + 2 < len(RNA):
 
         # Convert the RNA condones to amino acids using the
-
         # look up table
-
         if single_letter:
-
-            seq.append(triple_letter_to_single_letter[table[RNA[current:current + 3]]])
-
+            seq.append(
+                triple_letter_to_single_letter[table[RNA[current:current + 3]]]
+            )
         else:
-
             seq.append(table[RNA[current:current + 3]])
-
-            
 
         current += 3
 
-    
-
     return seq
 
-hw_hydrophobicity = {   
-
-    'Ala': -0.5,
-
-    'Arg': 3.0,
-
-    'Asn': 0.2,
-
-    'Asp': 3.0,
-
-    'Cys': -1.0,
-
-    'Gln': 0.2,
-
-    'Glu': 3.0,
-
-    'Gly': 0.0,
-
-    'His': -0.5,
-
-    'Ile': -0.8,
-
-    'Leu': -1.8,
-
-    'Lys': -1.3,
-
-    'Met': 3.0,
-
-    'Phe': -2.5,
-
-    'Pro': 0.0,
-
-    'Ser': 0.3,
-
-    'Thr': -0.4,
-
-    'Trp': -3.4,
-
-    'Tyr': -2.3,
-
-    'Val': -1.5,
-
-    '*': 0
-
-}
-
-triple_letter_to_single_letter = {   
-
+# This a lookup table that converts 3 character amino acids codes to
+# single character IUPAC codes
+triple_letter_to_single_letter = {
     'Ala': 'A',
-
     'Arg': 'R',
-
     'Asn': 'N',
-
     'Asp': 'D',
-
     'Asx': 'B',
-
     'Cys': 'C',
-
     'Gln': 'Q',
-
     'Glu': 'E',
-
     'Glx': 'Z',
-
     'Gly': 'G',
-
     'His': 'H',
-
     'Ile': 'I',
-
     'Leu': 'L',
-
     'Lys': 'K',
-
     'Met': 'M',
-
     'Phe': 'F',
-
     'Pro': 'P',
-
     'Ser': 'S',
-
     'Thr': 'T',
-
     'Trp': 'W',
-
     'Tyr': 'Y',
-
-    'Val': 'V'
-,
-    '*':'*'
+    'Val': 'V',
+    '*': '*'
 }
 
+# TODO: Comment this function
 def ranges(nums):
     nums = sorted(set(nums))
     gaps = [[s, e] for s, e in zip(nums, nums[1:]) if s+1 < e]
     edges = iter(nums[:1] + sum(gaps, []) + nums[-1:])
     return list(zip(edges, edges))
 
-#Main
-genes = readFile("Assignment1Sequences.txt")
-table = setUpTable()
-AASeqs = []
-for gene in genes:
-    AASeqs.append(convertToAAs(genes[gene], table, single_letter=False))
-for seq in AASeqs:
-    conform_vals = [conforms[aa] for aa in seq]
+# The main function
+def main():
+    # Read the RNA sequences
+    genes = readFile("Assignment1Sequences.txt")
+
+    # Set up the look up table
+    table = setUpTable()
+
+    # Calculate convert the RNA sequences to amino acid sequences and store
+    # them in a dictionary
+    AASeqs = {}
+    for gene in genes:
+        AASeqs[gene] = convertToAAs(genes[gene], table, single_letter=False)
+
+    # Loop through every converted gene
+    for gene in AASeqs:
+        # Get the amino acid sequence for this gene
+        aa_sequence = AASeqs[gene]
+
+        # Convert the amino acid sequence to a conformational parameters list
+        conform_vals = [conformational_parameters[aa] for aa in aa_sequence]
+
+        # Use a sliding window of length 20
+        window_length = 20
+
+        # A list to hold the indexes of windows which have 18 or more
+        # conformational parameters greater than or equal to 0.8
+        high_indexes = []
+
+        # Initialize the counter to 0
+        count = 0
+        for i in range(window_length):
+            if (conform_vals[i] >= 0.8):
+                count += 1
+
+        # If more than 18 conformational parameters with values greater than 
+        # or equal to 0.8 are found then add the index of the start of the 
+        # window to the high_indexes list
+        if (count >= 18):
+            high_indexes.append(0)
+
+        # Keep sliding the window over until the last sliding position
+        for i in range(1, len(conform_vals) - window_length + 1):
+            # At each new position remove the conformational parameter at the 
+            # beginning of the previous window and add the conformational 
+            # parameter at the end of the current window
+            count -= 1 if conform_vals[i-1] >= 0.8 else 0
+            count += 1 if conform_vals[i + 20 - 1] >= 0.8 else 0
 
 
+            # If more than 18 conformational parameters with values greater than 
+            # or equal to 0.8 are found then add the index of the start of the 
+            # window to the high_indexes list
+            if count >= 18:
+                high_indexes.append(i)
 
-    window_length = 20
-    some = [0 for i in conform_vals]
+        # TODO: comment this loop
+        potential_indexes = []
+        for group in ranges(high_indexes):
+            potential_indexes.append(round(sum(group) / len(group)))
+            
+        good_indexes = []
+        # Filter the potential indexes so that we don't have any overlapping
+        # transmembrane domains (TMD)
+        for start_position in potential_indexes:
+            # Check if the transmembrane domain is spaced at least 20 amino
+            # acids from the previous one
+            if len(good_indexes) == 0 or \
+                start_position > good_indexes[-1][0] + 20:
 
-    val = 0
+                # Calculate the ending position of the TMD
+                end_position = start_position + window_length - 1
+                good_indexes.append((start_position, end_position))
+
+        # Print the output
+        print('{}: {}'.format(gene, good_indexes))
 
 
-
-    for i in range(window_length):
-
-        if (conform_vals[i] >= 0.8):
-
-            val += 1
-
-        
-
-    some[0] = val
-
-
-
-    for i in range(1, len(conform_vals) - window_length + 1):
-
-        val -= 1 if conform_vals[i-1] >= 0.8 else 0
-
-        val += 1 if conform_vals[i + 20 -1] >= 0.8 else 0
-
-        some[i] = val
-
-    high_vals = []
-    for i in range(len(some)):
-        if some[i] >= 18:
-            high_vals.append(i)
-    aves = []
-    for group in ranges(high_vals):
-        aves.append(round(sum(group) / len(group)))
-    good_vals = []
-    for ave in aves:
-        if len(good_vals) == 0 or ave > good_vals[-1] + 20:
-            good_vals.append(ave)
-    print(aves)
-    print(good_vals)
-
+if __name__ == '__main__':
+    main()
