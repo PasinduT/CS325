@@ -192,6 +192,27 @@ def ranges(nums):
     edges = iter(nums[:1] + sum(gaps, []) + nums[-1:])
     return list(zip(edges, edges))
 
+
+# This method formats the output in a nice way
+# Parameter good_indexes: the list of the predicted transmembrane domains
+# Parameter gene: the name of the gene
+# Parameter sequence: the full amino acid sequence (using three letter codes)
+def format_output(good_indexes, gene, sequence):
+    print('{}: {}\n'.format(gene, good_indexes))
+
+    for start, end in good_indexes:
+        # Make sure to include the last element
+        end = end + 1
+        # Convert the sequence to single letter codes
+        seq = [triple_letter_to_single_letter[aa] for aa in sequence[start:end]]
+        # Convert to string
+        seq = ''.join(seq)
+        # Add spaces inbetween the string
+        seq = ' '.join([seq[i:i+5] for i in range(0, len(seq), 5)])
+        print('{} {}'.format(start, seq))
+
+    print()
+
 # The main function
 def main():
     # Read the RNA sequences
@@ -267,7 +288,8 @@ def main():
                 good_indexes.append((start_position, end_position))
 
         # Print the output
-        print('{}: {}'.format(gene, good_indexes))
+        format_output(good_indexes, gene, aa_sequence)
+
 
 
 if __name__ == '__main__':
