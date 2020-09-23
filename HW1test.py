@@ -185,17 +185,19 @@ triple_letter_to_single_letter = {
     '*': '*'
 }
 
-#Finds sequences of numbers in a sorted set
-#ex. [1, 2, 3, 4, 6, 7, 9] -> [(1,4), (6,7), (9, 9)]
-#Parameter nums: the sorted set to find the ranges in
-#Return: Returns a list of the ranges found
+# Finds sequences of numbers in a sorted set
+# ex. [1, 2, 3, 4, 6, 7, 9] -> [(1,4), (6,7), (9, 9)]
+# Parameter nums: the sorted set to find the ranges in
+# Return: Returns a list of the ranges found
 def ranges(nums):
-    #creates ranges of the gaps in between sequences
+    # creates ranges of the gaps in between sequences
     gaps = [[s, e] for s, e in zip(nums, nums[1:]) if s+1 < e]
-    #adds the first and last elements of the list to the beggining and ends of the gaps, and makes an iterator over the new set
+    # adds the first and last elements of the list to the beggining and ends of
+    # the gaps, and makes an iterator over the new set
     edges = iter(nums[:1] + sum(gaps, []) + nums[-1:])
-    #returns a list of pairs generated using zip
-    #because edges is an iterator, the first element is pair with the second, then the third with the fourth and so on
+    # returns a list of pairs generated using zip
+    # because edges is an iterator, the first element is pair with the second, 
+    # then the third with the fourth and so on
     return list(zip(edges, edges))
 
 
@@ -275,7 +277,8 @@ def main():
             if count >= 18:
                 high_indexes.append(i)
 
-        #Finds the average of each range of indices and sets it as a potential start location
+        # Finds the average of each range of indices and sets it as a potential
+        # start location
         potential_indexes = []
         for group in ranges(high_indexes):
             potential_indexes.append(round(sum(group) / len(group)))
