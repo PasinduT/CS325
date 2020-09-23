@@ -185,11 +185,17 @@ triple_letter_to_single_letter = {
     '*': '*'
 }
 
-# TODO: Comment this function
+#Finds sequences of numbers in a sorted set
+#ex. [1, 2, 3, 4, 6, 7, 9] -> [(1,4), (6,7), (9, 9)]
+#Parameter nums: the sorted set to find the ranges in
+#Return: Returns a list of the ranges found
 def ranges(nums):
-    nums = sorted(set(nums))
+    #creates ranges of the gaps in between sequences
     gaps = [[s, e] for s, e in zip(nums, nums[1:]) if s+1 < e]
+    #adds the first and last elements of the list to the beggining and ends of the gaps, and makes an iterator over the new set
     edges = iter(nums[:1] + sum(gaps, []) + nums[-1:])
+    #returns a list of pairs generated using zip
+    #because edges is an iterator, the first element is pair with the second, then the third with the fourth and so on
     return list(zip(edges, edges))
 
 # The main function
