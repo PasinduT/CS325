@@ -144,7 +144,7 @@ def convertToAAs(RNA, table, single_letter=False):
     # Loop over the RNA string length in multiples of 3
     while current + 2 < len(RNA):
 
-        # Convert the RNA condones to amino acids using the
+        # Convert the RNA condons to amino acids using the
         # look up table
         if single_letter:
             seq.append(
