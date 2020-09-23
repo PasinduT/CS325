@@ -254,7 +254,7 @@ def main():
             if count >= 18:
                 high_indexes.append(i)
 
-        # TODO: comment this loop
+        #Finds the average of each range of indices and sets it as a potential start location
         potential_indexes = []
         for group in ranges(high_indexes):
             potential_indexes.append(round(sum(group) / len(group)))
