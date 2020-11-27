@@ -40,6 +40,9 @@ def make_cladogram (dist_dict):
             dist_dict[c][new_item] = d
             heapq.heappush(pq, (d, c, new_item))
 
+        if len(dist_dict.keys()) == 1:
+                break
+
     if len(dist_dict.keys()) == 1:
         return list(dist_dict.keys())[0]
 
@@ -61,17 +64,17 @@ def make_dist_dict (seqs, d_func):
     return dist_dict
 
 
-def main():
+def test():
     from distance import dJC
 
-    test = {
+    t = {
         'A': "ATATAT",
         'B': "ATTTTT",
         'C': "ATATAA",
         'D': "TTTTTT"
     }
     
-    some = make_dist_dict(test, dJC)
+    some = make_dist_dict(t, dJC)
 
     print(some)
 
@@ -80,6 +83,6 @@ def main():
     print(res)
 
 if __name__ == "__main__":
-    main()
+    test()
         
 
