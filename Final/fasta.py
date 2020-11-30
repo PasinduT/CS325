@@ -2,11 +2,11 @@
 # Reads RNA, DNA or Protien sequences in FASTA format from a file
 # Parameter filename: A string containing the relative path of the file from
 # where this program is stored
-# Return: The sequences contained in the file in a dictionary format
-def readFASTAFile(filename):
+# Parameter genes: A dictionary object which should hold the genes read from
+# the FASTA file. Therefore this function does not have a return value
+def readFASTAFile(filename, genes):
     # Open the file and initialize the dictionary
     file = open(filename, "r")
-    genes = {}
     for line in file:
         # Remove the newline characters and spaces at the end
         line = line.strip()
@@ -52,4 +52,3 @@ def readFASTAFile(filename):
 
     # Close the file and return the dictionary object
     file.close()
-    return genes
