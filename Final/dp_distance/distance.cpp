@@ -14,8 +14,11 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
 
     int n = strlen(s1);
     int m = strlen(s2);
+
+    // cout << "String lengths are " << n << ", " << m << endl;
     
-    int table[n+1][m+1];
+    int (*table)[m+1];
+    table = (int (*) [(m+1)]) malloc(sizeof(*table) * (n+1));
     table[0][0] = 0;
 
     for (int i = 1; i < n+1; ++i) table[i][0] = table[i-1][0] + 1;
@@ -33,7 +36,10 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
         }
     }
 
-    return PyLong_FromLong(table[n][m]);
+    int val = table[n][m];
+    free(table);    
+
+    return PyLong_FromLong(val);
 }
 
 static PyMethodDef distance_methods[] = {

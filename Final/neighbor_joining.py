@@ -5,7 +5,9 @@ def make_cladogram (dist_dict):
 
     while (len(dist_dict) > 1): 
         d, a, b = mini
+        
         new_node = (a, b)
+
         dista = dist_dict[a]
         distb = dist_dict[b]
         del dist_dict[a]
@@ -38,7 +40,7 @@ def calculate_dist_dict (dist_dict):
 
     # Just a large value with random data to start off (terrible I know) 
     # TODO: fix it to get the first/random distance
-    mini = (10000, dist_dict[list(dist_dict.keys())[0]], 
+    mini = (1000000, dist_dict[list(dist_dict.keys())[0]], 
             dist_dict[list(dist_dict.keys())[0]])
 
     keys = list(dist_dict.keys())
@@ -51,7 +53,7 @@ def calculate_dist_dict (dist_dict):
             if d < mini[0]:
                 mini = (d, a, b)
     
-    return dist_dict, mini
+    return res, mini
 
 # This function tests the above algorithm
 def test ():

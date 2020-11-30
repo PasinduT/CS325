@@ -4,7 +4,7 @@
 # where this program is stored
 # Parameter genes: A dictionary object which should hold the genes read from
 # the FASTA file. Therefore this function does not have a return value
-def readFASTAFile(filename, genes):
+def readFASTAFile(filename, genes, limit=10):
     # Open the file and initialize the dictionary
     file = open(filename, "r")
     for line in file:
@@ -48,7 +48,7 @@ def readFASTAFile(filename, genes):
             # Key:   The line that starts with '>'
             #        ('>' character removed)
             # Value: The RNA sequence of the gene
-            genes[line[1:]] = ''.join(gene)
+            genes[line[1:limit+1]] = ''.join(gene)
 
     # Close the file and return the dictionary object
     file.close()
