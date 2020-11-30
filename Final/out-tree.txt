@@ -1,0 +1,1 @@
+(('ref|NW_007', ('ref|NC_014', 'ref|NW_020')), ('ref|NW_017', ('ref|NC_045', ('ref|NW_010', 'ref|NC_040'))))

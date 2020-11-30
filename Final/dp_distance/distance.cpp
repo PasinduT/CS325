@@ -15,29 +15,28 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
     int n = strlen(s1);
     int m = strlen(s2);
 
-    // cout << "String lengths are " << n << ", " << m << endl;
     
-    int (*table)[m+1];
-    table = (int (*) [(m+1)]) malloc(sizeof(*table) * (n+1));
-    table[0][0] = 0;
+    int *table = new int[(n+1) * (m+1)];
+    table[0] = 0;
 
-    for (int i = 1; i < n+1; ++i) table[i][0] = table[i-1][0] + 1;
-    for (int i = 1; i < m+1; ++i) table[0][i] = table[0][i-1] + 1;
+    for (int i = 1; i < n+1; ++i) table[i * (m+1)] = table[(i-1) * (m+1)] + 1;
+    for (int i = 1; i < m+1; ++i) table[i] = table[i-1] + 1;
 
     for (int i = 1; i < n+1; ++i) {
         for (int j = 1; j < m+1; ++j) {
             if (s1[i-1] == s2[j-1]) {
-                table[i][j] = table[i-1][j-1];
+                table[(i * (m+1)) + j] = table[((i-1) * (m+1)) + (j-1)];
             }
             else {
-                table[i][j] = min(table[i-1][j-1] + 1, 
-                    min(table[i][j-1] + 1, table[i-1][j] + 1));
+                table[(i * (m+1)) + j] = min(table[((i-1) * (m+1)) + (j-1)] + 1, 
+                    min(table[((i) * (m+1)) + (j-1)] + 1, 
+                        table[((i-1) * (m+1)) + j]+ 1));
             }
         }
     }
 
-    int val = table[n][m];
-    free(table);    
+    int val = table[(n * (m+1)) + m];
+    delete [] table;    
 
     return PyLong_FromLong(val);
 }
@@ -58,3 +57,4 @@ static struct PyModuleDef distance_module = {
 PyMODINIT_FUNC PyInit_dp_distance(void) {
     return PyModule_Create(&distance_module);
 }
+
