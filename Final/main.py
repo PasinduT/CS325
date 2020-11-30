@@ -2,7 +2,8 @@ import os
 from upgma import make_dist_dict
 from neighbor_joining import make_cladogram, calculateAverageD, calculate_dist_dict
 from fasta import readFASTAFile
-from distance import dJC, dp_distance
+from distance import dJC
+from dp_distance import dp_distance as dp_distance
 
 
 def main():
@@ -13,6 +14,9 @@ def main():
     print([len(genes[a]) for a in genes])
 
     some = make_dist_dict(genes, dp_distance)
+
+    # some = dp_distance("ATTA", "TTTTA")
+
     print(some)
 
 
