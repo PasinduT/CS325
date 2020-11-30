@@ -42,14 +42,14 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
 }
 
 static PyMethodDef distance_methods[] = {
-    {"dp_distance", dp_distance, METH_VARARGS, "Something much ado about nothing"},
+    {"dp_distance", dp_distance, METH_VARARGS, "Implements edit distance between two sequences"},
     {NULL, NULL, 0, NULL}
 };
 
 static struct PyModuleDef distance_module = {
     PyModuleDef_HEAD_INIT,
     "dp_distance",
-    "something much ado about nothing",
+    "Implements edit distance between two sequences",
     -1,
     distance_methods
 };
