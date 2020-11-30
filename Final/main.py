@@ -5,31 +5,31 @@ from fasta import readFASTAFile
 from distance import dJC
 from dp_distance import dp_distance as dp_dist
 import output_tree
-import pickle, json
+import pickle, re
+
+filename_re = re.compile(r'\w+_([\w_]+)\.fa')
+def parse_filename(filename):
+    return filename_re.match(filename).group(1)
 
 def main():
-    genes = {}
-    for filename in os.listdir('sequences/EEF2'):
-        readFASTAFile("sequences/EEF2/" + filename, genes)
+    for folder in os.listdir('sequences'):
+        genes = {}
+        for filename in os.listdir('sequences/' + folder):
+            readFASTAFile("sequences/" + folder + "/" + filename, 
+                parse_filename(filename), genes)
 
-    print([len(genes[a]) for a in genes])
+        print([len(genes[a]) for a in genes])
 
-    some = make_dist_dict(genes, dp_dist)
+        some = make_dist_dict(genes, dp_dist)
 
-    with open('dist.txt', 'wb') as file:
-        file.write(pickle.dumps(some))
+        # print(some.keys())
 
-    # with open('dist.txt', 'rb') as file:
-    #     some = pickle.loads(file.read())
+        res = make_cladogram(some)
 
-    print(some.keys())
+        with open("output/tree_" + folder + '.txt' , 'w') as file:
+            file.write('{}'.format(res))
 
-    res = make_cladogram(some)
-
-    with open("out-tree.txt", 'w') as file:
-        file.write('{}'.format(res))
-
-    output_tree.output_tree(res, "EEF2.png")
+        output_tree.output_tree(res, folder, 'output/' + folder + '.png')
 
 
 if __name__ == '__main__':

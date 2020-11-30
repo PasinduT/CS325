@@ -76,7 +76,7 @@ def test ():
     print(res)
 
     import output_tree
-    output_tree.output_tree(res, "mytree.png")
+    output_tree.output_tree(res, "testing", "mytree.png")
 
 if __name__ == '__main__':
     test()

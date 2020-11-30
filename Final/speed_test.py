@@ -6,8 +6,8 @@ from timeit import default_timer as timer
 def test():
     genes = {}
 
-    readFASTAFile("sequences/EEF2/EEF2_A_carolinensis.fa", genes)
-    readFASTAFile("sequences/EEF2/EEF2_A_mississippiensis.fa", genes)
+    readFASTAFile("sequences/EEF2/EEF2_A_carolinensis.fa", "some", genes)
+    readFASTAFile("sequences/EEF2/EEF2_A_mississippiensis.fa", "other", genes)
 
 
     keys = list(genes.keys())
@@ -22,7 +22,7 @@ def test():
     c_time = end - start
 
     start = timer()
-    py_version = dp_python(first, second)
+    py_version = dp_c(first, second)
     end = timer()
     py_time = end - start
 
