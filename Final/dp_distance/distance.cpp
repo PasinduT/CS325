@@ -10,38 +10,36 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
     const char * s1;
     const char * s2;
 
-    int k = PyArg_ParseTuple(args, "ss", &s1, &s2);
+    PyArg_ParseTuple(args, "ss", &s1, &s2);
 
-    int n = strlen(s1);
-    int m = strlen(s2);
+    uint n = strlen(s1);
+    uint m = strlen(s2);
     
 
-    int *old = new int[(m+1)];
-    int *later = new int[(m+1)];
+    uint *old = new uint[(m+1)];
+    uint *later = new uint[(m+1)];
 
     // cout << "Got here" << endl;
     
     old[0] = 0;
-    for (int i = 1; i < m+1; ++i) old[i] = old[i-1] + 1;
+    for (uint i = 1; i < m+1; ++i) old[i] = old[i-1] + 4;
 
 
     // cout << "and here" << endl;
 
-    for (int i = 1; i < n+1; ++i) {
-        later[0] = i;
-        for (int j = 1; j < m+1; ++j) {
+    for (uint i = 1; i < n+1; ++i) {
+        later[0] = i * 4;
+        for (uint j = 1; j < m+1; ++j) {
             if (s1[i-1] == s2[j-1]) {
                 later[j] = old[j-1];
             }
             else {
                 later[j] = min(old[j-1] + 1, 
-                    min(old[j-1] + 1, 
-                        old[j]+ 1));
+                    min(old[j-1] + 4, 
+                        old[j]+ 4));
             }
         }
-        int *temp = old;
-        old = later;
-        later = temp;
+        swap(old, later);
     }
 
     int val = old[m];

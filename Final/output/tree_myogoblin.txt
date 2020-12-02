@@ -1,1 +1,1 @@
-(('snake', ('lizard', 'turtle')), ('croc', ('duck', ('tinamou', 'songbird'))))
+(('duck', ('tinamou', 'songbird')), (('lizard', 'turtle'), ('croc', 'snake')))
