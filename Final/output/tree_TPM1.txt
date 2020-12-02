@@ -1,1 +1,1 @@
-(('scutatus', ('guttatus', 'carolinensis')), (('picta', 'mississippiensis'), ('platyrhynchos', 'guttata')))
+(('snake', ('tinamou', 'lizard')), (('turtle', 'croc'), ('duck', 'songbird')))

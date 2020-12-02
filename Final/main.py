@@ -12,11 +12,22 @@ def parse_filename(filename):
     return filename_re.match(filename).group(1)
 
 def main():
+    conversions = {
+        "scutatus": "snake",
+        "carolinensis": "lizard",
+        "picta": "turtle",
+        "mississippiensis": "croc",
+        "platyrhynchos": "duck",
+        "guttatus": "tinamou",
+        "guttata": "songbird",
+    }
+
     for folder in os.listdir('sequences'):
         genes = {}
         for filename in os.listdir('sequences/' + folder):
+            name = conversions[parse_filename(filename)]
             readFASTAFile("sequences/" + folder + "/" + filename, 
-                parse_filename(filename), genes)
+                name, genes)
 
         print([len(genes[a]) for a in genes])
 
