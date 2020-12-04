@@ -1,5 +1,5 @@
 import heapq
-import pickle
+import json
 # Implement the UPGMA algorithm here
 
 # Simple test case
@@ -54,7 +54,7 @@ def make_cladogram (dist_dict):
 # seqs: a dictionary with the sequence names and their distances
 # d_func: the distance function that will be used to calculate the distance 
 #         between each sequence
-# filename: (Default: None) if a filename is supplied, then a serialized version
+# filename: (Default: None) if a filename is supplied, then a JSON version
 #           of the resulting dictionary object will be stored in the given 
 #           filename
 # Returns: a dictionary object where the keys will be sequence names, and the
@@ -76,7 +76,7 @@ def make_dist_dict (seqs, d_func, filename=None):
 
     if filename:
         with open(filename, 'wb') as file:
-            pickle.dump(dist_dict, file)
+            json.dump(dist_dict, file)
 
 
     return dist_dict

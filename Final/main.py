@@ -5,7 +5,7 @@ from fasta import readFASTAFile
 from distance import dJC
 from dp_distance import dp_distance as dp_dist
 import output_tree
-import pickle, re
+import json, re
 
 filename_re = re.compile(r'\w+_([\w_]+)\.fa')
 def parse_filename(filename):
@@ -48,11 +48,11 @@ def main():
         print([len(genes[a]) for a in genes])
 
         try:
-            file = open(distances_dest + folder + '.txt', 'rb')
-            some = pickle.load(file)
+            file = open(distances_dest + folder + '.json', 'rb')
+            some = json.load(file)
         except:
             print("here")
-            some = make_dist_dict(genes, dp_dist, distances_dest + folder + '.txt')
+            some = make_dist_dict(genes, dp_dist, distances_dest + folder + '.json')
 
         # print(some.keys())
 
