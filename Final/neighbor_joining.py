@@ -1,5 +1,12 @@
 # Implement the neighbor joining algorithm here
 
+# This function will make a cladogram using the neighbor joining algorithm. The
+# output will be in the form of tuples
+# dist_dict: a nxn distance matrix stored in the form of nested dictionaries.
+#            ex: {
+#                   "A": {"B": 3},
+#                   "B": {"A": 3},
+#                }
 def make_cladogram (dist_dict):
     dist_dict, mini = calculate_dist_dict(dist_dict)
 
@@ -23,6 +30,8 @@ def make_cladogram (dist_dict):
 
     return list(dist_dict.keys())[0]
 
+# This function calculates the distance between two nodes in the neighbor 
+# joining algorithm
 def calculateAverageD (first, second, some):
     if len(some) < 3:
         return 0
@@ -40,7 +49,7 @@ def calculate_dist_dict (dist_dict):
 
     # Just a large value with random data to start off (terrible I know) 
     # TODO: fix it to get the first/random distance
-    mini = (1000000, dist_dict[list(dist_dict.keys())[0]], 
+    mini = (10000000, dist_dict[list(dist_dict.keys())[0]], 
             dist_dict[list(dist_dict.keys())[0]])
 
     keys = list(dist_dict.keys())

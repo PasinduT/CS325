@@ -1,1 +1,1 @@
-(('duck', ('tinamou', 'songbird')), (('lizard', 'turtle'), ('croc', 'snake')))
+(('pubescens', ('Western barn owl', ('Ruff', ('Sand lizard', ('Zebra finch', ('Gallus', 'White-throated Tinamou')))))), ('Budgerigar', (('Adélie penguin', ('Golden eagle', ('Gyrfalcon', ('American alligator', ('Tiger snake', ('Eastern brown snake', ('Carolina anole', ('Green sea turtle', ('Gharial', 'Painted turtle'))))))))), ('Common ostrich', 'Mallard'))))

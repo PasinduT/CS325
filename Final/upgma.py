@@ -1,5 +1,5 @@
 import heapq
-
+import pickle
 # Implement the UPGMA algorithm here
 
 # Simple test case
@@ -48,7 +48,19 @@ def make_cladogram (dist_dict):
 
     raise Exception("More than one tree was created: {}".format(dist_dict))
 
-def make_dist_dict (seqs, d_func): 
+
+# This function makes a nxn distance matrix that is stored in the form of a 
+# dictionary 
+# seqs: a dictionary with the sequence names and their distances
+# d_func: the distance function that will be used to calculate the distance 
+#         between each sequence
+# filename: (Default: None) if a filename is supplied, then a serialized version
+#           of the resulting dictionary object will be stored in the given 
+#           filename
+# Returns: a dictionary object where the keys will be sequence names, and the
+#          the values will be dictionary objects with the keys of all the other
+#          the sequence names and the distance from the current sequence to it
+def make_dist_dict (seqs, d_func, filename=None): 
     dist_dict = {}
 
     keys = list(seqs.keys())
@@ -61,6 +73,12 @@ def make_dist_dict (seqs, d_func):
             d = d_func(seqs[keys[i]], seqs[keys[j]])
             dist_dict[keys[i]][keys[j]] = d
             dist_dict[keys[j]][keys[i]] = d
+
+    if filename:
+        with open(filename, 'wb') as file:
+            pickle.dump(dist_dict, file)
+
+
     return dist_dict
 
 
