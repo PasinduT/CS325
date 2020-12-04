@@ -29,9 +29,10 @@ def main():
         "agilis": "Sand lizard",
         "adeliae": "Adélie penguin",
         "camelus": "Common ostrich",
-        "alba": "Western barn owl",
+        "alba": "Barn owl",
         "gangeticus": "Gharial",
         "textilis": "Eastern brown snake",
+        "pubescens": "Downy Woodpecker"
     }
 
     distances_dest = "output/distances/"
