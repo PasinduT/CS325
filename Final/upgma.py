@@ -75,7 +75,7 @@ def make_dist_dict (seqs, d_func, filename=None):
             dist_dict[keys[j]][keys[i]] = d
 
     if filename:
-        with open(filename, 'wb') as file:
+        with open(filename, 'w') as file:
             json.dump(dist_dict, file)
 
 

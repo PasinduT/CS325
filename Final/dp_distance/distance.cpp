@@ -34,7 +34,11 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
                 later[j] = old[j-1];
             }
             else {
-                later[j] = min(old[j-1] + 1, 
+                register int val = s1[i-1] ^ s2[j-1];
+                if (val == 6 || val == 23) val = 1;
+                else val = 2;
+
+                later[j] = min(old[j-1] + val, 
                     min(old[j-1] + 4, 
                         old[j]+ 4));
             }

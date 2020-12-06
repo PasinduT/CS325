@@ -46,13 +46,13 @@ def main():
             readFASTAFile(sequences_src + folder + "/" + filename, 
                 name, genes)
 
-        print([len(genes[a]) for a in genes])
+        print(folder, [len(genes[a]) for a in genes])
 
         try:
-            file = open(distances_dest + folder + '.json', 'rb')
+            file = open(distances_dest + folder + '.json')
             some = json.load(file)
         except:
-            print("here")
+            print('Calculating distances...')
             some = make_dist_dict(genes, dp_dist, distances_dest + folder + '.json')
 
         # print(some.keys())
