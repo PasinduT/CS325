@@ -1,6 +1,6 @@
 import os
 from upgma import make_dist_dict
-from neighbor_joining import make_cladogram, calculateAverageD, calculate_dist_dict
+from neighbor_joining import make_cladogram
 from fasta import readFASTAFile
 from distance import dJC
 from dp_distance import dp_distance as dp_dist
