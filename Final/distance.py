@@ -25,6 +25,7 @@ def dJC (seq1, seq2):
 # This function calculates the minimum distance between two sequences
 # using a dynamic programming method
 # TODO: Update the gap, mismatch, and match penalties
+# @deprecated use the C++ extension instead
 def dp_distance(seq1, seq2):
     gap_p = 1
     mis_p = 1

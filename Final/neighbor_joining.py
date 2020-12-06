@@ -3,18 +3,13 @@ import pprint
 pp = pprint.PrettyPrinter(indent = 4)
 
 # This function will make a cladogram using the neighbor joining algorithm. The
-# output will be in the form of tuples
-# dist_dict: a nxn distance matrix stored in the form of nested dictionaries.
-#            ex: {
-#                   "A": {"B": 3},
-#                   "B": {"A": 3},
-#                }
+# output will be in FORMAT_1
+# dist_dict: the distance matrix in FORMAT_2
+# Return: the resulting tree in FORMAT_1
 def make_cladogram (dist_dict):
-    
 
     while (len(dist_dict) > 2): 
         mini = calculate_min_Q(dist_dict)
-        
 
         d, a, b = mini
         da, db = calculate_distance_to_pair(dist_dict, a, b)
@@ -33,13 +28,11 @@ def make_cladogram (dist_dict):
             dist_dict[new_node][c] = nd
             dist_dict[c][new_node] = nd
 
-        # print(mini)
-        # pp.pprint(dist_dict)
-
     a, b = tuple(dist_dict.keys())
     d = dist_dict[a][b]
     return (a, d, b)
 
+# TODO: rename this function and its variables
 def calculate_distance_to_pair (some, a, b):
     total = 0
     
@@ -56,6 +49,7 @@ def calculate_distance_to_pair (some, a, b):
 
 # This function calculates the distance between two nodes in the neighbor 
 # joining algorithm
+# TODO: rename this function and its variables
 def calculateAverageD (first, second, some):
     tot = 0
     for c in some:
@@ -67,6 +61,11 @@ def calculateAverageD (first, second, some):
         # tot += some[first][c] + some[c][second]
     return tot 
 
+# This function calculates the Q matrix from the neighbor joining algorithm 
+# and then returns the minimum entry within it
+# dist_dict: the distance matrix in FORMAT_2
+# Return: the minimum entry in the Q matrix generated for the given distance
+#         matrix
 def calculate_min_Q (dist_dict):
 
     # Just a large value with random data to start off (terrible I know) 

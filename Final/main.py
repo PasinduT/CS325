@@ -7,10 +7,17 @@ from dp_distance import dp_distance as dp_dist
 import output_tree
 import json, re
 
+# This function parses a filename of a fasta file containing a sequence
+# for example if the filename is 'TPM1_A_gallus.fa', then it will return
+# gallus.
+# filename: the filename that should be parsed
+# Return: returns the given output
 filename_re = re.compile(r'\w+_([\w_]+)\.fa')
 def parse_filename(filename):
     return filename_re.match(filename).group(1)
 
+
+# This is the main function of the program
 def main():
     conversions = {
         "scutatus": "Tiger snake",
@@ -46,7 +53,9 @@ def main():
             readFASTAFile(sequences_src + folder + "/" + filename, 
                 name, genes)
 
-        print(folder, [len(genes[a]) for a in genes])
+        print(folder)
+        print(list(genes.keys()))
+        print([len(genes[a]) for a in genes])
 
         try:
             file = open(distances_dest + folder + '.json')

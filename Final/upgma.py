@@ -57,9 +57,7 @@ def make_cladogram (dist_dict):
 # filename: (Default: None) if a filename is supplied, then a JSON version
 #           of the resulting dictionary object will be stored in the given 
 #           filename
-# Returns: a dictionary object where the keys will be sequence names, and the
-#          the values will be dictionary objects with the keys of all the other
-#          the sequence names and the distance from the current sequence to it
+# Returns: the distance matrix between all the sequences in FORMAT_2
 def make_dist_dict (seqs, d_func, filename=None): 
     dist_dict = {}
 

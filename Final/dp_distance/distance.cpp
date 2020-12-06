@@ -18,14 +18,9 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
 
     uint *old = new uint[(m+1)];
     uint *later = new uint[(m+1)];
-
-    // cout << "Got here" << endl;
     
     old[0] = 0;
     for (uint i = 1; i < m+1; ++i) old[i] = old[i-1] + 4;
-
-
-    // cout << "and here" << endl;
 
     for (uint i = 1; i < n+1; ++i) {
         later[0] = i * 4;
