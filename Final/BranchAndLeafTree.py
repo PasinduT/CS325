@@ -1,14 +1,19 @@
 from random import sample, random
 from ast import literal_eval
+from neighbor_joining import calculate_distance_to_pair
 
 class BranchAndLeafTree:
     parents = dict()#child to parent
     internal_nodes = dict()#name to depth)
     leaves = dict()#name to depth
     last_internal_node = -1
+    dist_dict = dict()
+    current_length = int()
     
     #Creates a BranchAndLeafTree object from a cladogram
-    def __init__(self, cladogram):
+    def __init__(self, cladogram, dist_dict):
+        self.dist_dict = dist_dict.copy()
+        self.current_length = self.calculate_length()
         self.internal_nodes["_0"] = 0
         self.last_internal_node = 0
         self.find_branches(cladogram[0], cladogram[1], "_0", 1)
@@ -52,9 +57,6 @@ class BranchAndLeafTree:
             for leaf in leaves_copy:
                 if leaves_copy[leaf] == max_depth:
                     leaves_at_max_depth.add(leaf)
-            print("Leaves")
-            print(leaves_at_max_depth)
-            print(parents_copy)
             for leaf in leaves_at_max_depth:
                 leaves_copy.pop(leaf)
             max_depth -= 1
@@ -88,22 +90,16 @@ class BranchAndLeafTree:
         best_leaves = self.leaves.copy()
         best_parents = self.parents.copy()
         best_internal_nodes = self.internal_nodes.copy()
-        #best_length = 
-        #The branch that was removed
-        #best_length = 
+        best_length = self.current_length
+        #The initial tree length
         for _ in range(iterations):
-            print("Start")
             current_internal_nodes = self.internal_nodes.copy()
             current_parents = self.parents.copy()
             current_leaves = self.leaves.copy()
             #randomly picks a leaf to move
             leaf = sample(list(self.leaves), 1)[0]
-            print("Leaf")
-            print(leaf)
             #Randomly picks a branch to add the leaf to
             splice_site = sample(list(self.parents), 1)[0]
-            print("Splice Site")
-            print(splice_site)
             #TODO: Add the leaf
             self.last_internal_node += 1
             self.internal_nodes["_" + str(self.last_internal_node)] = self.internal_nodes[self.parents[splice_site]] + 1
@@ -112,9 +108,9 @@ class BranchAndLeafTree:
             self.parents[leaf] = "_" + str(self.last_internal_node)
             self.parents[splice_site] = "_" + str(self.last_internal_node)
             self.fix_subtree("_0")
-            print(self.to_cladogram())
             #TODO: Calculate new length
-            if new_length > best_length:
+            new_length = self.calculate_length()
+            if new_length < best_length:
                 best_leaves = self.leaves.copy()
                 best_parents = self.parents.copy()
                 best_internal_nodes = self.internal_nodes.copy()
@@ -131,7 +127,6 @@ class BranchAndLeafTree:
     #@Param node_name: The name of the node to find the subtree of
     #Return: The set notation of the subtree
     def fix_subtree(self, node_name):
-        print(self.parents)
         children = list()
         for child in self.parents:
             if self.parents[child] == node_name:
@@ -166,6 +161,61 @@ class BranchAndLeafTree:
                 self.parents.pop(node_name)
         else:
             self.fix_subtree(children[0])
+            
+    def calculate_length(self):
+        leaves_copy = self.leaves.copy()
+        parents_copy = self.parents.copy()
+        dist_copy = self.dist_dict.copy()
+        length = 0
+        max_depth = 0
+        for leaf in leaves_copy:
+            if leaves_copy[leaf] > max_depth:
+                max_depth = leaves_copy[leaf]
+        leaves_at_max_depth = set()
+        while len(leaves_copy) > 1:
+            #Find leaves at current depth
+            for leaf in leaves_copy:
+                if leaves_copy[leaf] == max_depth:
+                    leaves_at_max_depth.add(leaf)
+            for leaf in leaves_at_max_depth:
+                leaves_copy.pop(leaf)
+            max_depth -= 1
+            while len(leaves_at_max_depth) > 0:
+                first = leaves_at_max_depth.pop()
+                if first[0] == '(':
+                    first = literal_eval(first)
+                parent = parents_copy[str(first)]
+                second = ""
+                parents_copy.pop(str(first))
+                for key in parents_copy:
+                    if parents_copy[key] == parent:
+                        second = key
+                        if second[0] == '(':
+                            second = literal_eval(second)
+                        parents_copy.pop(key)
+                        break
+                leaves_copy[str((first, second))] = max_depth
+                new_node = (first, second)
+                
+                dfirst, dsecond = calculate_distance_to_pair(dist_copy, first, second)
+                dist_copy[new_node] = dict()
+                dist_copy[first][new_node] = dfirst
+                dist_copy[new_node][first] = dfirst
+                dist_copy[second][new_node] = dsecond
+                dist_copy[new_node][second] = dsecond
+                length += dfirst + dsecond
+                for key in list(dist_copy.keys()):
+                    if first == key or second == key:
+                        continue
+                    d = (dist_copy[first][key] + dist_copy[second][key] - dist_copy[first][second]) / 2
+                    dist_copy[new_node][key] = d
+                    dist_copy[key][new_node] = d
+                if parent != '_0':
+                    parents_copy[str((first, second))] = parents_copy[parent]
+                    parents_copy.pop(parent)
+                leaves_at_max_depth.remove(str(second))
+        return length
+            
                 
 
 def test():
@@ -184,11 +234,11 @@ def test():
 
     print(some)
 
-    res = upgma.make_cladogram(some)
+    res = upgma.make_cladogram(some.copy())
 
     print(res)
 
-    tree = BranchAndLeafTree(res)
+    tree = BranchAndLeafTree(res, some)
 
     tree.branch_swapping()
 
