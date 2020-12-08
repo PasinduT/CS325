@@ -19,7 +19,18 @@ def parse_filename(filename):
 
 # FORMAT_1: the format in which the output tree from Neighbor Joining
 #           will be stored
-#
+# The tree will be represented in a recursive format, where each node will be
+# stored as a tuple. There are two types of nodes. The topmost node of the tree
+# has the following format:
+#           (Node A, distance between Node A and Node B, Node B)
+# the reason for this is that Neighbor joining returns an unrooted tree, which 
+# means that one of the branches must be given individually in a node based 
+# format. 
+# The second type of node is the internal node. For example internal node Node U
+# has the following structure:
+#   (Child Node A, distance to Node A, Child Node B, distance to Node B)
+# All distances will be in Python floats, and leaf nodes will be stored as 
+# strings.
 
 # FORMAT_2: the format in which the distance matrix will be stored
 #

@@ -34,21 +34,21 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
     // Make two sequences that will hold the memoized values from the dynamic
     // programming algorithm. Note that only two rows of the matrix are needed
     // since we only need the distance and not the entire distance
-    uint *old = new uint[(m+1)];
-    uint *later = new uint[(m+1)];
+    uint *previous = new uint[(m+1)];
+    uint *next = new uint[(m+1)];
     
     // Initialize the first row of the matrix.
-    old[0] = 0;
-    for (uint i = 1; i < m+1; ++i) old[i] = old[i-1] + 4;
+    previous[0] = 0;
+    for (uint i = 1; i < m+1; ++i) previous[i] = previous[i-1] + gap_penalty;
 
     // Start from the second row of the matrix and continue until the final 
     // distance (the last entry in the matrix) has been calculated.
     for (uint i = 1; i < n+1; ++i) {
-        later[0] = i * 4;
+        next[0] = i * gap_penalty;
         for (uint j = 1; j < m+1; ++j) {
             // If they match, then there would be no penalty.
             if (s1[i-1] == s2[j-1]) {
-                later[j] = old[j-1];
+                next[j] = previous[j-1];
             }
             else {
                 // Otherise calculate the penalty
@@ -61,19 +61,19 @@ static PyObject * dp_distance(PyObject * self, PyObject * args) {
 
                 // Choose the minimum penalty for this entry in the matrix and 
                 // store it
-                later[j] = min(old[j-1] + penalty, 
-                    min(old[j-1], 
-                        old[j]) + gap_penalty);
+                next[j] = min(previous[j-1] + penalty, 
+                    min(previous[j-1], 
+                        previous[j]) + gap_penalty);
             }
         }
-        // Swap the pointers of old and later, so that the old row becomes the 
-        // new row, and the new row becomes the old row
-        swap(old, later);
+        // Swap the pointers of previous and next, so that the previous row 
+        // becomes the next row, and the next row becomes the previous row
+        swap(previous, next);
     }
     // Store the final result in a variable and perform memory management
-    int result = old[m];
-    delete [] old;
-    delete [] later;    
+    int result = previous[m];
+    delete [] previous;
+    delete [] next;    
 
     // Return the result
     return PyLong_FromLong(result);

@@ -17,7 +17,7 @@ def output_tree (the_tree, name, filename):
     # Make a new style object that would have features to stylize the ETE tree
     style = TreeStyle()
     style.title.add_face(TextFace(name, fsize=10), column=0)
-    style.show_scale = True
+    style.show_scale = False
     style.show_leaf_name = False
 
     # Since birds, squamates, crocodillians, and turtles have their own color
@@ -81,5 +81,5 @@ def tree_to_newick (tree):
     # Otherwise (any other node) print it with the distances.
     elif len(tree) == 4:
         a, da, b, db = tree
-        return '({}:{}, {}:{})'.format(tree_to_newick(a), da, 
-            tree_to_newick(b), db)
+        return '({}, {})'.format(tree_to_newick(a), 
+            tree_to_newick(b))

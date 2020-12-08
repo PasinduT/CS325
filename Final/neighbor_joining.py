@@ -21,7 +21,7 @@ def make_cladogram (dist_dict):
         # Calculate the distance between the two nodes to the new node
         # da is the distance from 'a' to the new node and db is the distance 
         # from 'b' to the new node 
-        da, db = calculate_distance_to_pair(dist_dict, a, b)
+        da, db = calculate_distance_to_new_node(dist_dict, a, b)
 
         # Make the new node with the distance from the child nodes to it,
         # spliced in between
@@ -57,34 +57,47 @@ def make_cladogram (dist_dict):
     # as a tuple (in accordance with FORMAT_1)
     return (a, d, b)
 
-# TODO: rename this function and its variables
-def calculate_distance_to_pair (some, a, b):
+# This function calculates the branch length from child nodes 'a' and 'b' to the 
+# new parent node that contains them.
+# dist_dict: the distance matrix in FORMAT_1
+# a: one of the child nodes
+# b: the other child node
+# Return: the branch length from 'a' to the new node, and the branch length from
+#         'b' to the new node as a tuple (da, db)
+def calculate_distance_to_new_node (dist_dict, a, b):
+    # This method follows the equation to calculate the distances by the 
+    # neighbor joining algorithm
     total = 0
     
-    for k in some:
+    for k in dist_dict:
         if k != a:
-            total += some[a][k]
+            total += dist_dict[a][k]
         
         if k != b:
-            total -= some[b][k]
+            total -= dist_dict[b][k]
     
-    total = total / (len(some) - 2)
-    total = (some[a][b] + total) / 2
-    return total, some[a][b] - total
+    total = total / (len(dist_dict) - 2)
+    total = (dist_dict[a][b] + total) / 2
 
-# This function calculates the distance between two nodes in the neighbor 
-# joining algorithm
-# TODO: rename this function and its variables
-def calculateAverageD (first, second, some):
-    tot = 0
-    for c in some:
-        if c != first or c == second:
-            tot += some[first][c]
+    # Return (distance from 'a' to new node, distance from 'b' to new node)
+    return total, dist_dict[a][b] - total
+
+# This function calculates the distance Q between two nodes in the neighbor 
+# joining algorithm. (An entry in the Q matrix)
+# dist_dict: the distance dictionary in FORMAT_1
+# a: one of the sequences
+# b: the other sequence
+# Return: the entry in the Q matrix corresponding with sequence 'a' and 'b'
+def calculate_Q_distance (dist_dict, a, b):
+    # This function simply implements the formula found for the Q matrix entries
+    total = 0
+    for c in dist_dict:
+        if c != a or c == b:
+            total += dist_dict[a][c]
         
-        if c != second:
-            tot += some[second][c]
-        # tot += some[first][c] + some[c][second]
-    return tot 
+        if c != b:
+            total += dist_dict[b][c]
+    return total 
 
 # This function calculates the Q matrix from the neighbor joining algorithm 
 # and then returns the minimum entry within it
@@ -102,7 +115,8 @@ def calculate_min_Q (dist_dict):
     for i in range(len(keys) - 1):
         for j in range(i + 1, len(keys)):
             a, b = keys[i], keys[j]
-            d = (len(keys) - 2) * dist_dict[a][b] - calculateAverageD(a, b, dist_dict)
+            d = (len(keys) - 2) * dist_dict[a][b] - \
+                    calculate_Q_distance(dist_dict, a, b)
             if d < mini[0]:
                 mini = (d, a, b)
     
