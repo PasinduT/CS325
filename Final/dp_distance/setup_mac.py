@@ -4,7 +4,7 @@ def main():
     extra_link_args=["-stdlib=libc++", '-mmacosx-version-min=10.9']
     setup(  name="dp_distance",
             version="1.0.0",
-            description="something much ado about Nothing",
+            description="Implements edit distance between two sequences",
             author="Pasindu Tennakoon",
             author_email="ppt8251@truman.edu",
             ext_modules=[

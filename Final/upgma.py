@@ -59,19 +59,26 @@ def make_cladogram (dist_dict):
 #           filename
 # Returns: the distance matrix between all the sequences in FORMAT_2
 def make_dist_dict (seqs, d_func, filename=None): 
+    # Make an empty dictionary to hold the distance matrix
     dist_dict = {}
 
     keys = list(seqs.keys())
 
+    # Add all the keys to the distance matrix and initialize them with empty
+    # dictionaries.
     for i in range(len(seqs)):
         dist_dict[keys[i]] = {}
 
+    # Calculate the distance between each sequence and every other sequence
+    # and store the appropriate locations in the dictionary.
     for i in range(len(seqs) - 1):
         for j in range(i + 1, len(seqs)):
             d = d_func(seqs[keys[i]], seqs[keys[j]])
             dist_dict[keys[i]][keys[j]] = d
             dist_dict[keys[j]][keys[i]] = d
 
+    # If a filename is give, then output the the distance matrix to the file
+    # in JSON format.
     if filename:
         with open(filename, 'w') as file:
             json.dump(dist_dict, file)

@@ -7,29 +7,54 @@ pp = pprint.PrettyPrinter(indent = 4)
 # dist_dict: the distance matrix in FORMAT_2
 # Return: the resulting tree in FORMAT_1
 def make_cladogram (dist_dict):
-
+    # As long as there are more than two disconnected nodes in the tree,
+    # calculate the minimum value from the Q matrix and then combine those nodes
+    # together in the final tree.
     while (len(dist_dict) > 2): 
+
+        # Get the minimum distance in the Q matrix
         mini = calculate_min_Q(dist_dict)
 
+        # Get the distance, and the two nodes (a, b)
         d, a, b = mini
+
+        # Calculate the distance between the two nodes to the new node
+        # da is the distance from 'a' to the new node and db is the distance 
+        # from 'b' to the new node 
         da, db = calculate_distance_to_pair(dist_dict, a, b)
 
+        # Make the new node with the distance from the child nodes to it,
+        # spliced in between
         new_node = (a, da, b, db)
 
+        # Get the distances from node 'a', and 'b' to every other node, and
+        # delete that entry from the distance matrix
         dista = dist_dict[a]
         distb = dist_dict[b]
         del dist_dict[a]
         del dist_dict[b]
-        store = list(dist_dict.keys())
+
+        # Store a list of the nodes that remain to be joined together as keys
+        keys = list(dist_dict.keys())
+
+        # Add the new node to the distance matrix
         dist_dict[new_node] = {}
 
-        for c in store:
+        # Calculate the distance between the new node and every other node and
+        # store it in the correct positions in the distance matrix
+        for c in keys:
             nd = (dista[c] + distb[c] - dista[b]) / 2
             dist_dict[new_node][c] = nd
             dist_dict[c][new_node] = nd
 
+    # Get the last two nodes remaining as 'a', and 'b'.
     a, b = tuple(dist_dict.keys())
+
+    # Get the distance between 'a' and 'b'
     d = dist_dict[a][b]
+
+    # Return the topmost node as 'a', the distance between 'a' and 'b', and 'b'
+    # as a tuple (in accordance with FORMAT_1)
     return (a, d, b)
 
 # TODO: rename this function and its variables
@@ -83,7 +108,8 @@ def calculate_min_Q (dist_dict):
     
     return mini
 
-# This function tests the above algorithm
+# This function tests the above algorithm using the example given at
+# https://en.wikipedia.org/wiki/Neighbor_joining
 def test ():
     from distance import dJC
     import upgma

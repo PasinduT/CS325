@@ -17,6 +17,13 @@ def parse_filename(filename):
     return filename_re.match(filename).group(1)
 
 
+# FORMAT_1: the format in which the output tree from Neighbor Joining
+#           will be stored
+#
+
+# FORMAT_2: the format in which the distance matrix will be stored
+#
+
 # This is the main function of the program
 def main():
     conversions = {

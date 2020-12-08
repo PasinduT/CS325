@@ -1,5 +1,5 @@
 
-# Reads a RNA, DNA or Protien sequence in FASTA format from a file. This 
+# Reads a DNA sequence in FASTA format from a file. This 
 # function only reads the topmost protein from the file
 # filename: A string containing the relative path of the file from
 #           where this program is stored
@@ -14,7 +14,7 @@ def readFASTAFile(filename, name, genes):
     line = line.strip()
 
     # If the line starts with the '>' character
-    # then we can start reading the RNA sequence that starts
+    # then we can start reading the DNA sequence that starts
     # from the next line
     if line.startswith('>'):
 
@@ -49,7 +49,7 @@ def readFASTAFile(filename, name, genes):
         # Add a new gene to the dictionary where
         # Key:   The line that starts with '>'
         #        ('>' character removed)
-        # Value: The RNA sequence of the gene
+        # Value: The DNA sequence of the gene
         genes[name] = ''.join(gene)
 
     # Close the file and return the dictionary object
