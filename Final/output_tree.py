@@ -28,7 +28,7 @@ def output_tree (the_tree, name, filename):
         'Common ostrich', 'Mallard', 'A']
     squamates = ['Sand lizard','Tiger snake','Eastern brown snake',
         'Carolina anole',]
-    crocadillians = ['American alligator', 'Gharial','C']
+    crocodilians = ['American alligator', 'Gharial','C']
     turtles = ['Green sea turtle', 'Painted turtle','D']
 
     
@@ -46,7 +46,7 @@ def output_tree (the_tree, name, filename):
                 nstyle["fgcolor"] = "aqua"
             elif leafname in squamates:
                 nstyle["fgcolor"] = "yellow"
-            elif leafname in crocadillians:
+            elif leafname in crocodilians:
                 nstyle["fgcolor"] = "lightgreen"
             elif leafname in turtles:
                 nstyle["fgcolor"] = "orange"

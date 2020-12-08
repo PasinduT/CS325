@@ -1,6 +1,6 @@
 from random import sample, random
 from ast import literal_eval
-from neighbor_joining import calculate_distance_to_pair
+from neighbor_joining import calculate_distance_to_new_node
 
 class BranchAndLeafTree:
     parents = dict()#child to parent
@@ -197,7 +197,7 @@ class BranchAndLeafTree:
                 leaves_copy[str((first, second))] = max_depth
                 new_node = (first, second)
                 
-                dfirst, dsecond = calculate_distance_to_pair(dist_copy, first, second)
+                dfirst, dsecond = calculate_distance_to_new_node(dist_copy, first, second)
                 dist_copy[new_node] = dict()
                 dist_copy[first][new_node] = dfirst
                 dist_copy[new_node][first] = dfirst

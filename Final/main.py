@@ -2,10 +2,11 @@ import os
 from upgma import make_dist_dict
 from neighbor_joining import make_cladogram
 from fasta import readFASTAFile
-from distance import dJC
 from dp_distance import dp_distance as dp_dist
 import output_tree
 import json, re
+from BranchAndLeafTree import BranchAndLeafTree
+import copy
 
 # This function parses a filename of a fasta file containing a sequence
 # for example if the filename is 'TPM1_A_gallus.fa', then it will return
@@ -33,7 +34,23 @@ def parse_filename(filename):
 # strings.
 
 # FORMAT_2: the format in which the distance matrix will be stored
-#
+# Since most parts of the program requires a distance matrix between each 
+# pair of sequences. We had to implement a version of a distance matrix. 
+# Using a 2 dimensional array would require us to enumerate the sequences in a 
+# way, preventing us from caching the results from a previous run at computing 
+# the distances. Therefore we decided to use a structure consisting of nested
+# dictionaries, where the both names and distances would be stored. For example,
+# if we have the following distance matrix:
+#        ___|_A_|_B_|_C__
+#        A  | 0 | 1 | 3
+#        B  | 1 | 0 | 2
+#        B  | 3 | 2 | 0
+# We would store it as:
+# {
+#   'A': {'B': 1, 'C': 3},
+#   'B': {'A': 1, 'C': 2},
+#   'C': {'A': 3, 'B': 2},
+# }
 
 # This is the main function of the program
 def main():
@@ -84,12 +101,21 @@ def main():
 
         # print(some.keys())
 
-        res = make_cladogram(some)
+        res = make_cladogram(copy.deepcopy(some))
 
         with open("output/tree_" + folder + '.txt' , 'w') as file:
             file.write('{}'.format(res))
 
         output_tree.output_tree(res, folder, 'output/' + folder + '.png')
+
+        tree = BranchAndLeafTree(res, some)
+        tree.branch_swapping()
+        clad = tree.to_cladogram()
+
+        with open("output/tree_bs_" + folder + '.txt' , 'w') as file:
+            file.write('{}'.format(clad))
+
+        output_tree.output_tree(clad, folder, 'output/bs_' + folder + '.png')
 
 
 if __name__ == '__main__':
