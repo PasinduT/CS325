@@ -17,7 +17,7 @@ class BranchAndLeafTree:
         self.current_length = self.calculate_length()
         self.internal_nodes["_0"] = 0
         self.last_internal_node = 0
-        self.find_branches(cladogram[0], cladogram[1], "_0", 1)
+        self.find_branches(cladogram[0], cladogram[2], "_0", 1)
             
     #Recursive function for initializing a BranchAndLeafTree object
     #@Param clade1: One of two clades being passed to this function
@@ -29,7 +29,7 @@ class BranchAndLeafTree:
             self.last_internal_node += 1
             self.internal_nodes["_" + str(self.last_internal_node)] = depth
             self.parents["_" + str(self.last_internal_node)] = parent
-            self.find_branches(clade1[0], clade1[1], "_" + str(self.last_internal_node), depth + 1)
+            self.find_branches(clade1[0], clade1[2], "_" + str(self.last_internal_node), depth + 1)
         else:
             self.leaves[str(clade1)] = depth
             self.parents[str(clade1)] = parent
@@ -37,7 +37,7 @@ class BranchAndLeafTree:
             self.last_internal_node += 1
             self.internal_nodes["_" + str(self.last_internal_node)] = depth 
             self.parents["_" + str(self.last_internal_node)] = parent
-            self.find_branches(clade2[0], clade2[1], "_" + str(self.last_internal_node), depth + 1)
+            self.find_branches(clade2[0], clade2[2], "_" + str(self.last_internal_node), depth + 1)
         else:
             self.leaves[str(clade2)] = depth
             self.parents[str(clade2)] = parent
@@ -46,6 +46,7 @@ class BranchAndLeafTree:
     #Returns a cladogram representation of this object
     #Return: A cladogram of the graph
     def to_cladogram(self):
+        #0,2 names, 1, 3 distances
         leaves_copy = deepcopy(self.leaves)
         parents_copy = deepcopy(self.parents)
         max_depth = 0
@@ -164,9 +165,10 @@ class BranchAndLeafTree:
             self.fix_subtree(children[0])
             
     def calculate_length(self):
-        leaves_copy = self.leaves.copy()
-        parents_copy = self.parents.copy()
-        dist_copy = self.dist_dict.copy()
+        #names = dict()#internal node to string representation
+        leaves_copy = deepcopy(self.leaves)
+        parents_copy = deepcopy(self.parents)
+        dist_copy = deepcopy(self.dist_dict)
         length = 0
         max_depth = 0
         for leaf in leaves_copy:
@@ -178,6 +180,8 @@ class BranchAndLeafTree:
             for leaf in leaves_copy:
                 if leaves_copy[leaf] == max_depth:
                     leaves_at_max_depth.add(leaf)
+            print(leaves_at_max_depth)
+            print(parents_copy)
             for leaf in leaves_at_max_depth:
                 leaves_copy.pop(leaf)
             max_depth -= 1
@@ -188,7 +192,10 @@ class BranchAndLeafTree:
                 parent = parents_copy[str(first)]
                 second = ""
                 parents_copy.pop(str(first))
-                for key in parents_copy:
+                if len(leaves_at_max_depth) == 0:
+                    leaves_copy[str(first)] = max_depth
+                    continue
+                for key in leaves_at_max_depth:
                     if parents_copy[key] == parent:
                         second = key
                         if second[0] == '(':
@@ -197,7 +204,9 @@ class BranchAndLeafTree:
                         break
                 leaves_copy[str((first, second))] = max_depth
                 new_node = (first, second)
-                
+                #print(self.to_cladogram())
+                #print(self.parents)
+                print()
                 dfirst, dsecond = calculate_distance_to_new_node(dist_copy, str(first), str(second))
                 dist_copy[str(new_node)] = dict()
                 dist_copy[str(first)][str(new_node)] = dfirst
@@ -212,6 +221,7 @@ class BranchAndLeafTree:
                     dist_copy[str(new_node)][str(key)] = d
                     dist_copy[str(key)][str(new_node)] = d
                 if parent != '_0':
+                    print(str((first, second)))
                     parents_copy[str((first, second))] = parents_copy[parent]
                     parents_copy.pop(parent)
                 leaves_at_max_depth.remove(str(second))
