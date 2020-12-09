@@ -81,7 +81,6 @@ class BranchAndLeafTree:
                 if parent != '_0':
                     parents_copy[str((first, second))] = parents_copy[parent]
                     parents_copy.pop(parent)
-                print(parents_copy)
                 leaves_at_max_depth.remove(str(second))
         for leaf in leaves_copy:
             return leaf
@@ -115,9 +114,7 @@ class BranchAndLeafTree:
                 self.leaves[splice_site] = self.leaves[leaf]
             else:
                 self.internal_nodes[splice_site] = self.leaves[leaf]
-            print(self.leaves)
             self.fix_subtree("_0")
-            print(self.leaves)
             #TODO: Calculate new length
             new_length = self.calculate_length()
             if new_length < best_length:
@@ -137,10 +134,6 @@ class BranchAndLeafTree:
     #@Param node_name: The name of the node to find the subtree of
     #Return: The set notation of the subtree
     def fix_subtree(self, node_name):
-        print("Fix")
-        print(self.parents)
-        print(self.leaves)
-        print(self.internal_nodes)
         if node_name == "_0":
             internal_node_counter = dict()
             to_remove = list()
@@ -155,7 +148,6 @@ class BranchAndLeafTree:
                 internal_node_counter[self.parents[child]].append(child)
             is_changed = True
             while is_changed:
-                print(internal_node_counter)
                 is_changed = False
                 for node in internal_node_counter:
                     if node == node_name:
@@ -171,7 +163,6 @@ class BranchAndLeafTree:
                     elif len(internal_node_counter[node]) == 1:
                         if node == '_0':
                             continue
-                        print(node)
                         self.parents[internal_node_counter[node][0]] = self.parents[node]
                         if internal_node_counter[node][0] in self.internal_nodes:
                             self.internal_nodes[internal_node_counter[node][0]] = self.internal_nodes[node]
@@ -198,68 +189,11 @@ class BranchAndLeafTree:
                     self.internal_nodes[node] = self.internal_nodes[self.parents[node]] + 1
                 elif node in self.leaves:
                     self.leaves[node] = self.internal_nodes[self.parents[node]] + 1
-            """
-                        for node in self.internal_nodes:
-                if self.parents[node_name] == node:
-                    self.parents[children[0]] = node
-                    if children[0][0] == '_':
-                        self.internal_nodes[children[0]] = self.internal_nodes[node] + 1
-                        self.fix_subtree(children[0])
-                    else:
-                        self.leaves[children[0]] = self.internal_nodes[node] + 1
-                    break
-            self.internal_nodes.pop(node_name)
-            self.parents.pop(node_name)
-                
-        #creates a list to store children
-        children = list()
-        #finds children of this node
-        for child in self.parents:
-            if self.parents[child] == node_name:
-                children.append(child)
-        #if two children: an internal node that remains
-        if len(children) == 2:
-            if node_name != '_0':
-                self.internal_nodes[node_name] = self.internal_nodes[self.parents[node_name]] + 1
-            self.parents[children[0]] = node_name
-            self.parents[children[1]] = node_name
-            for child in children:
-                if child[0] == "_":
-                    self.internal_nodes[child] = self.internal_nodes[node_name] + 1
-                else:
-                    self.leaves[child] = self.internal_nodes[node_name] + 1
-            if children[0][0] == "_":
-                self.fix_subtree(children[0])
-            if children[1][0] == "_":
-                self.fix_subtree(children[1])
-        elif len(children) == 1 and node_name != "_0":
-            for node in self.internal_nodes:
-                if self.parents[node_name] == node:
-                    self.parents[children[0]] = node
-                    if children[0][0] == '_':
-                        self.internal_nodes[children[0]] = self.internal_nodes[node] + 1
-                        self.fix_subtree(children[0])
-                    else:
-                        self.leaves[children[0]] = self.internal_nodes[node] + 1
-                    break
-            self.internal_nodes.pop(node_name)
-            self.parents.pop(node_name)
-        elif node_name != "_0":
-            if node_name[0] == "_":
-                self.internal_nodes.pop(node_name)
-                parent = self.parents[node_name]
-                self.parents.pop(node_name)
-                self.fix_subtree(parent)
-            else:
-                self.leaves[node_name] = self.internal_nodes[self.parents[node_name]] + 1
-        else:
-            self.fix_subtree(children[0])
-            """
+            
+    #Calculates the length of the tree in its current state
+    #@Return: The length of the tree
     def calculate_length(self):
-        #names = dict()#internal node to string representation
-        print("start")
         leaves_copy = deepcopy(self.leaves)
-        print(leaves_copy)
         parents_copy = deepcopy(self.parents)
         dist_copy = deepcopy(self.dist_dict)
         length = 0
@@ -274,8 +208,6 @@ class BranchAndLeafTree:
                 if leaves_copy[leaf] == max_depth:
                     leaves_at_max_depth.add(leaf)
     
-            print(leaves_at_max_depth)
-            print(parents_copy)
             #removes leaves at max depth from list of leaves
             for leaf in leaves_at_max_depth:
                 leaves_copy.pop(leaf)
@@ -296,8 +228,6 @@ class BranchAndLeafTree:
                 #remove the first half from the parents array so it cannot be found
                 parents_copy.pop(str(first))
                 if len(leaves_at_max_depth) == 0:
-                    print("Here somehow")
-                    exit()
                     leaves_copy[str(first)] = max_depth
                     parents_copy[str(first)] = parents_copy[parent]
                     continue
@@ -319,9 +249,6 @@ class BranchAndLeafTree:
                 leaves_copy[str((first, second))] = max_depth
                 #creates the tuple
                 new_node = (first, second)
-                #print(self.to_cladogram())
-                #print(self.parents)
-                print()
                 #Finds distances to the new node from each child
                 dfirst, dsecond = calculate_distance_to_new_node(dist_copy, str(first), str(second))
                 dist_copy[str(new_node)] = dict()
@@ -341,9 +268,6 @@ class BranchAndLeafTree:
                     dist_copy[str(key)][str(new_node)] = d
                 #if parent != '_0':
                 if parent in parents_copy:
-                    print(str((first, second)))
-                    print(parents_copy)
-                    print(parent)
                     parents_copy[str((first, second))] = parents_copy[parent]
                     parents_copy.pop(parent)
                 elif parent in self.parents:
