@@ -128,14 +128,22 @@ def main():
         # Output the actual image of the NJ version of the cladogram
         output_tree.output_tree(res, folder, 'output/' + folder + '.png')
 
+        # Generate the Branch swapping object for the NJ version
         tree = BranchAndLeafTree(res, some)
         tree.branch_swapping()
+
+        # Convert the result from Branch swapping to a cladogram
         clad = tree.to_cladogram()
 
+        # Output the cladogram (Branch swapping version)
         with open("output/tree_bs_" + folder + '.txt' , 'w') as file:
             file.write('{}'.format(clad))
 
         output_tree.output_tree(clad, folder, 'output/bs_' + folder + '.png')
+
+        # We also manually rooted the trees after this, however, since this part
+        # changes frequently based on our decisions and the shape of the trees,
+        # we did not add the code here.
 
 
 if __name__ == '__main__':
