@@ -1,4 +1,5 @@
 from ete3 import Tree, TreeStyle, TextFace, NodeStyle, add_face_to_node
+import re
 
 # This function uses the ETE library to generate an image of the phylogenetic
 # tree that is passed on to it
@@ -16,7 +17,7 @@ def output_tree (the_tree, name, filename):
 
     # Make a new style object that would have features to stylize the ETE tree
     style = TreeStyle()
-    style.title.add_face(TextFace(name, fsize=10), column=0)
+    style.title.add_face(TextFace(name, fsize=5), column=0)
     style.show_scale = False
     style.show_leaf_name = False
 
@@ -31,17 +32,22 @@ def output_tree (the_tree, name, filename):
     crocodilians = ['American alligator', 'Gharial','C']
     turtles = ['Green sea turtle', 'Painted turtle','D']
 
+    # Use regex to parse out the leafname (sometimes it has quotes)
+    regex = re.compile(r"[^']+" )
+
     
     # Loop through all the nodes in the tree
     for n in t.traverse():
         # Make a new node style object and add the leaf name to it
         nstyle = NodeStyle()
-        n.add_face(TextFace(' ' + n.name, fsize=2), 1)
 
         # If the node is a leaf the add the correct color scheme to it, and 
         # make sure that the leaf name is visible
         if n.is_leaf():
-            leafname = str(n.name)
+            # Get the proper leaf name
+            leafname = regex.search(n.name).group(0)
+            n.add_face(TextFace(' ' + leafname, fsize=2), 1)
+
             if leafname in birds:
                 nstyle["fgcolor"] = "aqua"
             elif leafname in squamates:

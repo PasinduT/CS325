@@ -1,0 +1,1 @@
+(((((('Common ostrich', ((('Budgerigar', ('Adélie penguin', 'Golden eagle')), ('White-throated Tinamou', ('Zebra finch', 'Downy Woodpecker'))), 'Gyrfalcon')), 'American alligator'), 'Barn owl'), 'Mallard'), 'Green sea turtle'), ('Ruff', ('Painted turtle', ('Carolina anole', (('Eastern brown snake', ('Red junglefowl', ('Sand lizard', 'Gharial'))), 'Tiger snake')))))
