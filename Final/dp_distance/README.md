@@ -1,7 +1,10 @@
 # DP Distance C++ extension for Python
 
 To use this library, you have to first compile and install it.
-You can use 
+It might require stdlib headers in C++, a C++ compiler along with the Python 
+header files properly installed. Depending on the version of Python you have
+you might also need to install the disutils package in Python. If the requirements
+are satisfied, you can use 
 
 `python3 setup.py build`
 
