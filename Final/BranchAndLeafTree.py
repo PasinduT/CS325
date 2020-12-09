@@ -1,6 +1,7 @@
 from random import sample, random
 from ast import literal_eval
-from neighbor_joining import calculate_distance_to_new_node
+from neighbor_joining import calculate_distance_to_pair
+from copy import deepcopy
 
 class BranchAndLeafTree:
     parents = dict()#child to parent
@@ -12,7 +13,7 @@ class BranchAndLeafTree:
     
     #Creates a BranchAndLeafTree object from a cladogram
     def __init__(self, cladogram, dist_dict):
-        self.dist_dict = dist_dict.copy()
+        self.dist_dict = deepcopy(dist_dict)
         self.current_length = self.calculate_length()
         self.internal_nodes["_0"] = 0
         self.last_internal_node = 0
@@ -45,8 +46,8 @@ class BranchAndLeafTree:
     #Returns a cladogram representation of this object
     #Return: A cladogram of the graph
     def to_cladogram(self):
-        leaves_copy = self.leaves.copy()
-        parents_copy = self.parents.copy()
+        leaves_copy = deepcopy(self.leaves)
+        parents_copy = deepcopy(self.parents)
         max_depth = 0
         for leaf in leaves_copy:
             if leaves_copy[leaf] > max_depth:
@@ -87,15 +88,15 @@ class BranchAndLeafTree:
     #@Param accept_rate: The rate at which worse swaps should be accepted
     #Return: nothing
     def branch_swapping(self, iterations = 1000, accept_rate = 0.3):
-        best_leaves = self.leaves.copy()
-        best_parents = self.parents.copy()
-        best_internal_nodes = self.internal_nodes.copy()
+        best_leaves = deepcopy(self.leaves)
+        best_parents = deepcopy(self.parents)
+        best_internal_nodes = deepcopy(self.internal_nodes)
         best_length = self.current_length
         #The initial tree length
         for _ in range(iterations):
-            current_internal_nodes = self.internal_nodes.copy()
-            current_parents = self.parents.copy()
-            current_leaves = self.leaves.copy()
+            current_internal_nodes = deepcopy(self.internal_nodes)
+            current_parents = deepcopy(self.parents)
+            current_leaves = deepcopy(self.leaves)
             #randomly picks a leaf to move
             leaf = sample(list(self.leaves), 1)[0]
             #Randomly picks a branch to add the leaf to
@@ -111,16 +112,16 @@ class BranchAndLeafTree:
             #TODO: Calculate new length
             new_length = self.calculate_length()
             if new_length < best_length:
-                best_leaves = self.leaves.copy()
-                best_parents = self.parents.copy()
-                best_internal_nodes = self.internal_nodes.copy()
+                best_leaves = deepcopy(self.leaves)
+                best_parents = deepcopy(self.parents)
+                best_internal_nodes = deepcopy(self.internal_nodes)
             elif random() >= accept_rate:#choose not to take a step backwards
-                self.leaves = current_leaves.copy()
-                self.parents = current_parents.copy()
-                self.internal_nodes = current_internal_nodes.copy()
-        self.parents = best_parents.copy()
-        self.leaves = best_leaves.copy()
-        self.internal_nodes = best_internal_nodes.copy()
+                self.leaves = deepcopy(current_leaves)
+                self.parents = deepcopy(current_parents)
+                self.internal_nodes = deepcopy(current_internal_nodes)
+        self.parents = deepcopy(best_parents)
+        self.leaves = deepcopy(best_leaves)
+        self.internal_nodes = deepcopy(best_internal_nodes)
         return
 
     #Find the set notation for the subtree of a specified node
@@ -197,19 +198,19 @@ class BranchAndLeafTree:
                 leaves_copy[str((first, second))] = max_depth
                 new_node = (first, second)
                 
-                dfirst, dsecond = calculate_distance_to_new_node(dist_copy, first, second)
-                dist_copy[new_node] = dict()
-                dist_copy[first][new_node] = dfirst
-                dist_copy[new_node][first] = dfirst
-                dist_copy[second][new_node] = dsecond
-                dist_copy[new_node][second] = dsecond
+                dfirst, dsecond = calculate_distance_to_pair(dist_copy, str(first), str(second))
+                dist_copy[str(new_node)] = dict()
+                dist_copy[str(first)][str(new_node)] = dfirst
+                dist_copy[str(new_node)][str(first)] = dfirst
+                dist_copy[str(second)][str(new_node)] = dsecond
+                dist_copy[str(new_node)][str(second)] = dsecond
                 length += dfirst + dsecond
                 for key in list(dist_copy.keys()):
                     if first == key or second == key:
                         continue
-                    d = (dist_copy[first][key] + dist_copy[second][key] - dist_copy[first][second]) / 2
-                    dist_copy[new_node][key] = d
-                    dist_copy[key][new_node] = d
+                    d = (dist_copy[str(first)][str(key)] + dist_copy[str(second)][str(key)] - dist_copy[str(first)][str(second)]) / 2
+                    dist_copy[str(new_node)][str(key)] = d
+                    dist_copy[str(key)][str(new_node)] = d
                 if parent != '_0':
                     parents_copy[str((first, second))] = parents_copy[parent]
                     parents_copy.pop(parent)
