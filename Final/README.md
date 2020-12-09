@@ -5,7 +5,7 @@
 `python3 main.py`
 
 All the trees generated can be found in the output/ directory. To avoid running 
-the dp_distance algorithm. The results of the algorithm are cached in the 
+the dp_distance algorithm, the results of the algorithm are cached in the 
 output/distances directory as .json files. To rerun the dp_distance algorithm,
 simply delete all those .json files and run `main.py` 
 
@@ -14,7 +14,7 @@ simply delete all those .json files and run `main.py`
 - ETE library
     
     `pip install ete3`
-    
+
 - dp_distance library - you can compile it for a linux system using (Cython):
 
     `cd dp_distance && make clean && make`
@@ -25,6 +25,8 @@ simply delete all those .json files and run `main.py`
 
 ## Generated trees
 
+### Just NJ
+
 ![](https://raw.githubusercontent.com/PasinduT/CS325/master/Final/output/EEF2.png)
 
 ![](https://raw.githubusercontent.com/PasinduT/CS325/master/Final/output/TPM1.png)
@@ -34,6 +36,8 @@ simply delete all those .json files and run `main.py`
 ![](https://raw.githubusercontent.com/PasinduT/CS325/master/Final/output/NTF3.png)
 
 ![](https://raw.githubusercontent.com/PasinduT/CS325/master/Final/output/RHO.png)
+
+### After Branch swapping
 
 ![](https://raw.githubusercontent.com/PasinduT/CS325/master/Final/output/bs_EEF2.png)
 
