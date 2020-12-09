@@ -107,10 +107,14 @@ def calculate_Q_distance (dist_dict, a, b):
 def calculate_min_Q (dist_dict):
 
     # Just a large value with random data to start off (terrible I know) 
-    # TODO: fix it to get the first/random distance
+    # Ideally you would start with the first value in the dictionary, however
+    # this method is faster and it is highly unlikely that the distance ever
+    # exceeds 10000000
     mini = (10000000, dist_dict[list(dist_dict.keys())[0]], 
             dist_dict[list(dist_dict.keys())[0]])
 
+    # Compute the value of every entry in the Q matrix table, and find the 
+    # minimum value
     keys = list(dist_dict.keys())
     for i in range(len(keys) - 1):
         for j in range(i + 1, len(keys)):

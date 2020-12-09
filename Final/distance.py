@@ -52,6 +52,8 @@ def dp_distance(seq1, seq2):
     # print(table)
     return table[n][m]
 
+# Just a small test function that tests the distance functions for accuracy with
+# small test cases
 def test():
     seq1 = "ATARA"
     seq2 = "ATATT"

@@ -2,13 +2,8 @@ import heapq
 import json
 # Implement the UPGMA algorithm here
 
-# Simple test case
-# some = {'A': {'B': 2, 'C': 4}, 'B': {'A': 2, 'C': 3}, 'C': {'B': 3, 'A': 4}} 
-# should produce:
-#     |-----A
-#   |-|-----B
-# --|-------C 
-
+# This function implements the UPGMA algorithm, however, we didn't use it in 
+# our final submission. Therefore, it is not commented
 def make_cladogram (dist_dict):
     pq = []
 
@@ -86,7 +81,8 @@ def make_dist_dict (seqs, d_func, filename=None):
 
     return dist_dict
 
-
+# A smalll test method to test the UPGMA algorithm with the Jukes-Cantor 
+# distance model
 def test():
     from distance import dJC
 

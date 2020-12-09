@@ -54,6 +54,8 @@ def parse_filename(filename):
 
 # This is the main function of the program
 def main():
+
+    # Dictionary which converts the filenames to the common names of the species
     conversions = {
         "scutatus": "Tiger snake",
         "carolinensis": "Carolina anole",
@@ -77,10 +79,19 @@ def main():
         "pubescens": "Downy Woodpecker"
     }
 
+    # The location of the cached files from the distance matrix function
+    # since this is the most computationally intensive part of the program, 
+    # storing it helps.
     distances_dest = "output/distances/"
+
+    # The directory which contains the sequences, ordered into folders by the
+    # type of gene it contains
     sequences_src = "sequences/"
 
+    # Loop through every folder in the sequences directory
     for folder in os.listdir(sequences_src):
+
+        # Obtain a list of all the genes from all the files
         genes = {}
         for filename in os.listdir(sequences_src + folder):
             name = conversions.get(parse_filename(filename), 
@@ -88,24 +99,33 @@ def main():
             readFASTAFile(sequences_src + folder + "/" + filename, 
                 name, genes)
 
+
+        # Output here for debugging reasons
         print(folder)
         print(list(genes.keys()))
         print([len(genes[a]) for a in genes])
 
+        # If there already exists .json files containing the distance matricies
+        # in the distances_dest folder, then load the distances from that
+        # instead of computing the distances again
         try:
             file = open(distances_dest + folder + '.json')
             some = json.load(file)
         except:
+            # Otherwise calculate the distances 
             print('Calculating distances...')
             some = make_dist_dict(genes, dp_dist, distances_dest + folder + '.json')
 
-        # print(some.keys())
-
+        # Run the neighbor joining algorithm and generate a tree
         res = make_cladogram(copy.deepcopy(some))
 
+        # Output the tree in text format to a file in the output directory. This
+        # is useful when comparing if any changes have occurred during small
+        # updates
         with open("output/tree_" + folder + '.txt' , 'w') as file:
             file.write('{}'.format(res))
 
+        # Output the actual image of the NJ version of the cladogram
         output_tree.output_tree(res, folder, 'output/' + folder + '.png')
 
         tree = BranchAndLeafTree(res, some)

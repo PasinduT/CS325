@@ -1,5 +1,7 @@
 from distutils.core import setup, Extension
 
+# This setup file is needed to compile the C++ extension for the version of 
+# python that you are running. 
 def main():
     setup(  name="dp_distance",
             version="1.0.0",
